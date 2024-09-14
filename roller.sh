@@ -2,6 +2,7 @@
 
 declare -A SERVICES
 declare -A ENV_VARS
+declare -A DOCKERFILES
 # my_dict["key1"]="value1"
 # ${my_dict["age"]} = ${SERVICES[$SERVICE]}
 
@@ -14,7 +15,7 @@ fi
 
 ACTION=$1
 SERVICE=$2
-DOCKERFILE=${DOCKERFILE:-"Dockerfile"}
+#DOCKERFILE=${DOCKERFILE:-"Dockerfile"}
 
 
 # Trim the trailing space
@@ -25,7 +26,7 @@ build() {
     if [[ -n $(docker images -q "${SERVICES[$SERVICE]}:latest") ]]; then
         docker tag "${SERVICES[$SERVICE]}:latest" "${SERVICES[$SERVICE]}:prev" # Tag current image as previous
     fi
-        docker build -f "$DOCKERFILE" -t "${SERVICES[$SERVICE]}" . # Build new image, it becomes latest
+        docker build -f "${DOCKERFILES[$SERVICE]}" -t "${SERVICES[$SERVICE]}" . # Build new image, it becomes latest
 }
 
 # Run docker compose stack with the latest images
@@ -59,11 +60,11 @@ rollout() {
         env_assignments=$(echo "$env_assignments" | sed 's/ $//') # Trim the trailing space
 
         # ROLL_IMAGE="${SERVICES[$SERVICE]}:prev" docker rollout "$SERVICE"
-        command="$env_assignments docker rollout $SERVICE"
+        command="$env_assignments docker rollout -f $DOCKER_COMPOSE_FILE $SERVICE"
         eval "$command"
 
     else
-        echo "No latest image available for rollout!"
+        echo "ERROR: No latest image available for rollout!"
         exit 1
     fi
 }
@@ -85,11 +86,11 @@ rollback() {
         env_assignments=$(echo "$env_assignments" | sed 's/ $//') # Trim the trailing space
 
         # ROLL_IMAGE="${SERVICES[$SERVICE]}:prev" docker rollout "$SERVICE"
-        command="$env_assignments docker rollout $SERVICE"
+        command="$env_assignments docker rollout -f $DOCKER_COMPOSE_FILE $SERVICE"
         eval "$command"
         
     else
-        echo "No previous image available for rollback!"
+        echo "ERROR: No previous image available for rollback!"
         exit 1
     fi
 }
@@ -130,8 +131,8 @@ usage() {
 }
 
 main() {
-    echo "Running with the following parameters:"
-    cat .roller_env
+    echo -e "Running with the following parameters:\n"
+    cat roller.conf
     echo -e "\n"
     case "$ACTION" in
         help)
@@ -139,8 +140,8 @@ main() {
             exit 0
             ;;
         build)
-            if [[ -z "${SERVICES[$SERVICE]}" ]]; then
-                echo -e "Error: IMAGE is required for build action\n"
+            if [[ -z "$2" ]]; then
+                echo -e "Error: SERVICE is required for build action\n"
                 usage
                 exit 1
             fi

@@ -1,31 +1,18 @@
-# Rollout
+# Docker Compose Roller
 
-```yaml
-services:
-  myapp:
-    image: ${DEV_IMAGE}
-```
+Bash script that simplifies the rollback of the docker compose services to the previous version.
 
-```bash
-Makefile:rollout
-  docker rmi dev_image:prev
-  docker tag dev_image:latest dev_image:prev
-  docker build . -f Dockerfile.dev -t dev_image:latest
-  DEV_IMAGE=dev_image:latest docker rollout whoami
-```
+## Requirements
+Docker rollout plugin installed: https://github.com/Wowu/docker-rollout
 
-
-# POC - workflow
+## Installation
 
 ```bash
-docker build . -t custom_image # Будуємо окремо імадж
-DEV_IMAGE=custom_image:latest docker compose up -d # Запускаємо цілий стек
-docker tag custom_image:latest custom_image:prev # Тегаємо поточний імадж як старий
-nano entrypoint.sh # Щось змінюємо тут
-docker build . -t custom_image # Збираємо новий імадж, тепер він вже стає - latest
-DEV_IMAGE=custom_image:latest docker rollout web # Оновлюємо сервіс web
-docker ps
-DEV_IMAGE=custom_image:latest docker rollout web2 # Оновлюємо сервіс web2
+cd <your_destination_directory>
+curl https://raw.githubusercontent.com/dyedfox/docker-compose-roller/main/roller.sh -O https://raw.githubusercontent.com/dyedfox/docker-compose-roller/main/roller.conf -O
+chmod +x roller.sh
 ```
 
-# POC - 
+## Usage
+
+Update the conf file according to your setup
