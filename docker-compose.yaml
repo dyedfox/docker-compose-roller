@@ -11,6 +11,12 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.web2.entrypoints=web2"
       - "traefik.http.routers.web2.rule=Host(`web2.example.com`)"
+  web3:
+    image: traefik/whoami:v1.9.0
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web2.entrypoints=web2"
+      - "traefik.http.routers.web2.rule=Host(`web2.example.com`)"
 
   traefik:
     image: traefik:v2.9

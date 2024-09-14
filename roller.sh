@@ -15,11 +15,6 @@ fi
 
 ACTION=$1
 SERVICE=$2
-#DOCKERFILE=${DOCKERFILE:-"Dockerfile"}
-
-
-# Trim the trailing space
-env_assignments=$(echo "$env_assignments" | sed 's/ $//')
 
 # Build new image
 build() {
@@ -46,7 +41,7 @@ up() {
 rollout() {
     # build #- can be an option
     if [[ -n $(docker images -q "${SERVICES[$SERVICE]}:latest") ]]; then
-     #   ROLL_IMAGE="${SERVICES[$SERVICE]}:latest" docker rollout "$SERVICE"
+
         env_assignments=""
         for service in "${!ENV_VARS[@]}"; do
             env_var="${ENV_VARS[$service]}"
@@ -59,12 +54,32 @@ rollout() {
         done
         env_assignments=$(echo "$env_assignments" | sed 's/ $//') # Trim the trailing space
 
-        # ROLL_IMAGE="${SERVICES[$SERVICE]}:prev" docker rollout "$SERVICE"
         command="$env_assignments docker rollout -f $DOCKER_COMPOSE_FILE $SERVICE"
         eval "$command"
 
     else
         echo "ERROR: No latest image available for rollout!"
+        exit 1
+    fi
+}
+
+# Rollout non-custom  built service
+rollout_non_custom() {
+    NON_CUSTOM_SERVICE=$1
+    if [[ -n "$NON_CUSTOM_SERVICE" ]]; then
+        # build #- can be an option
+        env_assignments=""
+        for service in "${!ENV_VARS[@]}"; do
+            env_var="${ENV_VARS[$service]}"
+            image="${SERVICES[$service]}"
+            env_assignments+="$env_var=${image} "
+        done
+            env_assignments=$(echo "$env_assignments" | sed 's/ $//') # Trim the trailing space
+
+            command="$env_assignments docker rollout -f $DOCKER_COMPOSE_FILE $NON_CUSTOM_SERVICE"
+            eval "$command"
+    else
+        echo "ERROR: SERVICE is requires for rollout!"
         exit 1
     fi
 }
@@ -85,7 +100,6 @@ rollback() {
         done
         env_assignments=$(echo "$env_assignments" | sed 's/ $//') # Trim the trailing space
 
-        # ROLL_IMAGE="${SERVICES[$SERVICE]}:prev" docker rollout "$SERVICE"
         command="$env_assignments docker rollout -f $DOCKER_COMPOSE_FILE $SERVICE"
         eval "$command"
         
@@ -109,8 +123,7 @@ down() {
             env_assignments+="$env_var=${image} "
         done
         env_assignments=$(echo "$env_assignments" | sed 's/ $//') # Trim the trailing space
-        
-        #ROLL_IMAGE="${SERVICES[$SERVICE]}:latest" docker compose down -v || ROLL_IMAGE="${SERVICES[$SERVICE]}:prev" docker compose down -v
+       
         command="$env_assignments docker compose down"
         eval "$command"
 
@@ -123,11 +136,13 @@ down() {
 usage() {
     echo "Usage: roller <action> [service]"
     echo "Actions:"
-    echo "  build     - Build a Docker image"
-    echo "  up        - Build (if necessary) and start containers"
-    echo "  rollout   - Update a service with the new image"
-    echo "  rollback  - Rollback a service to the previous image"
-    echo "  down      - Stop and remove containers, networks, and volumes"
+    echo "  build                  - Build a Docker image"
+    echo "  up                     - Build (if necessary) and start containers"
+    echo "  rollout                - Update a service with the new image"
+    echo "  rollback               - Rollback a service to the previous image"
+    echo "  down                   - Stop and remove containers, networks, and volumes"
+    echo "  rollout --non-custom   - Rollout/rollback non-custom service"
+    echo "Info: Rollback for custom image is the same as rollout. Please refer to the documentation."
 }
 
 main() {
@@ -148,11 +163,6 @@ main() {
             build
             ;;
         up)
-            # if [[ -z "${SERVICES[$SERVICE]}" ]]; then
-            #     echo -e "Error: IMAGE is required for up action\n"
-            #     usage
-            #     exit 1
-            # fi
             up
             ;;
         rollout)
@@ -160,8 +170,11 @@ main() {
                 echo -e "Error: SERVICE is required for rollout action\n"
                 usage
                 exit 1
+            elif [[ "$2" == "--non-custom" ]]; then
+                rollout_non_custom "$3"
+            else
+                rollout
             fi
-            rollout
             ;;
         rollback)
             if [[ -z "$2" ]]; then
@@ -172,11 +185,6 @@ main() {
             rollback
             ;;
         down)
-            # if [[ -z "${SERVICES[$SERVICE]}" ]]; then
-            #     echo -e "Error: IMAGE is required for down action\n"
-            #     usage
-            #     exit 1
-            # fi
             down
             ;;
         *)

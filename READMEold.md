@@ -29,3 +29,6 @@ DEV_IMAGE=custom_image:latest docker rollout web2 # Оновлюємо серв�
 ```
 
 # POC - 
+
+Rollout and rollback non-custom services
+roller rollout --no-custom traefik
