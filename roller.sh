@@ -5,10 +5,10 @@ declare -A ENV_VARS
 # my_dict["key1"]="value1"
 # ${my_dict["age"]} = ${SERVICES[$SERVICE]}
 
-if [[ -f ".roller_env" ]]; then
-    source .roller_env
+if [[ -f "roller.conf" ]]; then
+    source roller.conf
 else
-    echo "File .roller_env does not exist!"
+    echo "File roller.conf does not exist!"
     exit 1
 fi
 

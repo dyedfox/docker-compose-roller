@@ -1,12 +1,12 @@
 services:
-  web:
-    image: ${ROLL_IMAGE}
+  web1:
+    image: ${ROLL_IMAGE1}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.web.entrypoints=web"
       - "traefik.http.routers.web.rule=Host(`web.example.com`)"
   web2:
-    image: ${ROLL_IMAGE}
+    image: ${ROLL_IMAGE2}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.web2.entrypoints=web2"
