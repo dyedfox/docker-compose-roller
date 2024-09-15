@@ -1,10 +1,10 @@
 # Docker Compose Roller
 
-Bash script that simplifies the rollback of the docker compose services to the previous version.
+Bash script that simplifies the rollback of the docker compose services to their previous versions.
 
-Imagine a situation when you have custom-built docker image and after some time you rollout it there is need to rollback to previous version with zero downtime.
-This script does exactly it! It can handle several custom images - each for the corresponding service.
-You can built certain image, up and down the docker compose stack, rollout and rollback you services with no downtime.
+Imagine a situation where you have a custom-built Docker image, and after deployment, you need to roll back to the previous version with zero downtime. This script does exactly that! It can handle several custom images - each corresponding to a different service.
+
+You can build specific images, start and stop the Docker Compose stack, and roll out or roll back your services with no downtime.
 
 ## Requirements
 Docker rollout plugin installed: https://github.com/Wowu/docker-rollout
@@ -33,14 +33,14 @@ DOCKERFILES["web2"]="Dockerfile.dev"
 ```
 Where:
 
-   `DOCKER_COMPOSE_FILE` - path to your actual docker-compose configuration file
+   `DOCKER_COMPOSE_FILE`                : path to your actual docker-compose configuration file
 
-   `SERVICES["service"]="image_name"` - service, according to the docker-compose file, and image_name for the image that should be built.
+   `SERVICES["service"]="image_name"`   : service name (as in the docker-compose file) and the image name that should be built
 
-   `ENV_VARS["service"]="ROLL_IMAGE1"` - service, according to the docker-compose file, and variable name that matches the service.
+   `ENV_VARS["service"]="ROLL_IMAGE1"`  : service name and the variable name that matches the service (see example below)
 
-   `DOCKERFILES["service"]="Dockerfile"` - service, according to the docker-compose file, and path to the Dockerfile name that matches the service.
-
+   `DOCKERFILES["service"]="Dockerfile"`:  service name and the path to the Dockerfile that matches the service
+   
 Example:
 
 ```yaml
