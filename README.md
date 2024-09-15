@@ -49,6 +49,7 @@ Example:
     image: ${ROLL_IMAGE1}
     ...
 ```
+Also refer to the `docker-compose.yaml`, and the mock-up `Dockerfile` and `Dockerfile.dev` files.
 
 ## Commands and options
 Actions:
