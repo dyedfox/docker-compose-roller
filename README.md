@@ -44,7 +44,7 @@ Where:
 Example:
 
 ```yaml
-    ,,,
+    ...
       web1:
     image: ${ROLL_IMAGE1}
     ...
