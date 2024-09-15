@@ -33,13 +33,13 @@ DOCKERFILES["web2"]="Dockerfile.dev"
 ```
 Where:
 
-   DOCKER_COMPOSE_FILE - path to your actual docker-compose configuration file
+   `DOCKER_COMPOSE_FILE` - path to your actual docker-compose configuration file
 
-   SERVICES["service"]="image_name" - service, according to the docker-compose file, and image_name for the image that should be built.
+   `SERVICES["service"]="image_name"` - service, according to the docker-compose file, and image_name for the image that should be built.
 
-   ENV_VARS["service"]="ROLL_IMAGE1" - service, according to the docker-compose file, and variable name that matches the service.
+   `ENV_VARS["service"]="ROLL_IMAGE1"` - service, according to the docker-compose file, and variable name that matches the service.
 
-   DOCKERFILES["service"]="Dockerfile" - service, according to the docker-compose file, and path to the Dockerfile name that matches the service.
+   `DOCKERFILES["service"]="Dockerfile"` - service, according to the docker-compose file, and path to the Dockerfile name that matches the service.
 
 Example:
 
