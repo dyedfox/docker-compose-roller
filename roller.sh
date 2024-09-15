@@ -3,8 +3,6 @@
 declare -A SERVICES
 declare -A ENV_VARS
 declare -A DOCKERFILES
-# my_dict["key1"]="value1"
-# ${my_dict["age"]} = ${SERVICES[$SERVICE]}
 
 if [[ -f "roller.conf" ]]; then
     source roller.conf
@@ -139,15 +137,15 @@ usage() {
     echo "  build                  - Build a Docker image"
     echo "  up                     - Build (if necessary) and start containers"
     echo "  rollout                - Update a service with the new image"
+    echo "  rollout --non-custom   - Rollout/rollback a non-custom service"
+    echo "     (Info: Rollback for custom image is essentially the same as rollout. Please refer to the documentation)"
     echo "  rollback               - Rollback a service to the previous image"
     echo "  down                   - Stop and remove containers, networks, and volumes"
-    echo "  rollout --non-custom   - Rollout/rollback non-custom service"
-    echo "Info: Rollback for custom image is the same as rollout. Please refer to the documentation."
 }
 
 main() {
     echo -e "Running with the following parameters:\n"
-    cat roller.conf
+    grep -v '^\s*#' roller.conf | grep -v '^\s*$'
     echo -e "\n"
     case "$ACTION" in
         help)
