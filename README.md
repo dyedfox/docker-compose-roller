@@ -12,8 +12,9 @@ Docker rollout plugin installed: https://github.com/Wowu/docker-rollout
 ## Installation
 
 ```bash
-cd <your_destination_directory>
-curl https://raw.githubusercontent.com/dyedfox/docker-compose-roller/main/roller.sh -O https://raw.githubusercontent.com/dyedfox/docker-compose-roller/main/roller.conf -O
+cd <your_docker_compose_directory>
+curl https://raw.githubusercontent.com/dyedfox/docker-compose-roller/main/roller.sh -O 
+curl https://raw.githubusercontent.com/dyedfox/docker-compose-roller/main/roller.conf -O
 chmod +x roller.sh
 ```
 
@@ -49,7 +50,7 @@ Example:
     image: ${ROLL_IMAGE1}
     ...
 ```
-Also refer to the `docker-compose.yaml`, and the mock-up `Dockerfile` and `Dockerfile.dev` files.
+Also refer to the `docker-compose.yaml`, and the mock-up `Dockerfile` and `Dockerfile.dev` files (examples directory).
 
 ## Commands and options
 Actions:
